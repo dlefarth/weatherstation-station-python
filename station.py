@@ -13,7 +13,7 @@ def measure():
     sensor = BMP085.BMP085()
     return {
         'temperature':sensor.read_temperature(), 
-        'pressure':sensor_read_pressure()
+        'pressure':sensor.read_pressure()
     }
 
 def read_queue():
