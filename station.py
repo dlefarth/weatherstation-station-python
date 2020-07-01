@@ -13,7 +13,8 @@ def measure():
     sensor = BMP085.BMP085()
     return {
         'temperature':sensor.read_temperature(), 
-        'pressure':sensor.read_pressure()
+        'pressure':sensor.read_pressure(),
+        'timestamp':datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
 
 def read_queue():
