@@ -3,6 +3,11 @@ import requests
 import json
 import os
 from datetime import datetime
+import time
+from timeloop import Timeloop
+from datetime import timedelta
+
+timeloop = Timeloop()
 
 station_id = '5ec6a6c17a5065101cb6d042'
 password = '123'
@@ -32,17 +37,29 @@ def delete_queue():
     if os.path.exists(queue_file):
         os.remove(queue_file)
 
-queue = read_queue()
-measurement = measure()
-measurements = queue + [measurement]
+def run():
+    queue = read_queue()
+    measurement = measure()
+    measurements = queue + [measurement]
 
-res = requests.post(
-    url, 
-    json = measurements,
-    auth = (station_id, password)
-)
+    print(measurements)
+    
+    try:
+        res = requests.post(
+            url, 
+            json = measurements,
+            auth = (station_id, password)
+        )
 
-if res.status_code == requests.codes.ok:
-    delete_queue()
-else: 
-    write_queue(measurements)
+        if res.status_code == requests.codes.ok:
+            print('sent to server, deleting queue')
+            delete_queue()
+        else: 
+            raise Exception('Not successful')
+    except:
+            write_queue(measurements)
+            print('sending to server failed, saving in queue')
+while True:
+    run()
+    time.sleep(6000)
+
